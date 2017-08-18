@@ -3,5 +3,6 @@
     "symbol": "VEN",
     "algorithm": "scrypt",
     "peerMagic": "746e6576",
-    "peerMagicTestnet": "fdd2c8f1"
+    "peerMagicTestnet": "fdd2c8f1",
+    "addTimeStamp": true
 }
