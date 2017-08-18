@@ -1,0 +1,68 @@
+{
+    "enabled": true,
+    "coin": "ventas.json",
+
+    "address": "VKAj17c7mnY4FfUsZqLDk3neJ5UQtv3tww",
+
+    "rewardRecipients": {
+        // "n37vuNFkXfk15uFnGoVyHZ6PYQxppD3QqK": 1.5,
+        // "22851477d63a085dbc2398c8430af1c09e7343f6": 0.1
+    },
+
+    "paymentProcessing": {
+        "enabled": false,
+        "paymentInterval": 20,
+        "minimumPayment": 70,
+        "daemon": {
+            "host": "192.168.0.12",
+            "port": 13102,
+            "user": "1234567890",
+            "password": "1234567890"
+        }
+    },
+
+    "ports": {
+        "18008": {
+            "diff": 8
+        },
+        "18032": {
+            "diff": 32,
+            "varDiff": {
+                "minDiff": 8,
+                "maxDiff": 512,
+                "targetTime": 15,
+                "retargetTime": 90,
+                "variancePercent": 30
+            }
+        },
+        "18256": {
+            "diff": 256
+        }
+    },
+
+    "daemons": [{
+        "host": "192.168.0.12",
+        "port": 13102,
+        "user": "1234567890",
+        "password": "1234567890"
+    }],
+
+    "p2p": {
+        "enabled": true,
+        "host": "192.168.0.12",
+        "port": 13102,
+        "disableTransactions": true
+    },
+
+    "mposMode": {
+        "enabled": false,
+        "host": "192.168.0.12",
+        "port": 3306,
+        "user": "me",
+        "password": "mypass",
+        "database": "ltc",
+        "checkPassword": true,
+        "autoCreateWorker": false
+    }
+
+}
