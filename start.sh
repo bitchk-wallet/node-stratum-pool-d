@@ -1,8 +1,5 @@
 #!/bin/bash
-#!/bin/bash
-BITCORE="../bitcore-node/bin/bitcore-node"
-mkdir -p logs
-mkdir -p pids
+BITCORE="node"
 run_program ()
 {
   nodefile=$1
@@ -29,4 +26,4 @@ run_program ()
   fi
 }
 
-run_program $BITCORE start pids/insight.pid logs/insight.log
+run_program $BITCORE init.js pids/insight.pid logs/insight.log
