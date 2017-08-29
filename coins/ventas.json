@@ -2,7 +2,7 @@
     "name": "Ventas",
     "symbol": "VEN",
     "algorithm": "scrypt",
-    "peerMagic": "746e6576",
+    "peerMagic": "76656e74",
     "peerMagicTestnet": "fdd2c8f1",
     "addTimeStamp": true
 }
