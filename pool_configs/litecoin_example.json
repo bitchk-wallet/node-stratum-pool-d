@@ -40,14 +40,12 @@
         }
     },
 
-    "daemons": [
-        {
-            "host": "127.0.0.1",
-            "port": 19332,
-            "user": "testuser",
-            "password": "testpass"
-        }
-    ],
+    "daemons": [{
+        "host": "127.0.0.1",
+        "port": 19332,
+        "user": "testuser",
+        "password": "testpass"
+    }],
 
     "p2p": {
         "enabled": true,
