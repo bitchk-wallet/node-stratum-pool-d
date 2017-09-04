@@ -2,10 +2,10 @@
     "enabled": true,
     "coin": "ventas.json",
 
-    "address": "VCPSoGSo75ogyxGVsq7VyGxznCHvASkgcV",
+    "address": "VGWsQn23oasJqRjjhV5LuhPqbanSkqkLoR",
 
     "rewardRecipients": {
-        // "n37vuNFkXfk15uFnGoVyHZ6PYQxppD3QqK": 1.5,
+        // "VGWsQn23oasJqRjjhV5LuhPqbanSkqkLoR": 1.5,
         // "22851477d63a085dbc2398c8430af1c09e7343f6": 0.1
     },
 
