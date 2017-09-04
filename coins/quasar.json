@@ -1,0 +1,7 @@
+{
+    "name": "Quasar",
+    "symbol": "QAC",
+    "algorithm": "scrypt",
+    "peerMagic": "51554153",
+    "peerMagicTestnet": "55554153"
+}
