@@ -1,8 +1,9 @@
 {
-    "enabled": false,
+    "enabled": true,
     "coin": "terabit.json",
 
-    "address": "TV562TUSKsUomLnJrA8PR1j1H1LSuiBdEZ",
+    // "address": "TV562TUSKsUomLnJrA8PR1j1H1LSuiBdEZ",
+    "address": "TPJAKNbbCCJ9xgDXroR3fJVb14GsuqNgzf",
 
     "rewardRecipients": {
         // "VGWsQn23oasJqRjjhV5LuhPqbanSkqkLoR": 1.5,
@@ -14,7 +15,7 @@
         "paymentInterval": 20,
         "minimumPayment": 70,
         "daemon": {
-            "host": "192.168.0.10",
+            "host": "192.168.0.12",
             "port": 13002,
             "user": "terabitrpc",
             "password": "sklsdfn!23sdf"
@@ -41,7 +42,7 @@
     },
 
     "daemons": [{
-        "host": "192.168.0.10",
+        "host": "192.168.0.12",
         "port": 13002,
         "user": "terabitrpc",
         "password": "sklsdfn!23sdf"
@@ -49,14 +50,14 @@
 
     "p2p": {
         "enabled": true,
-        "host": "192.168.0.10",
+        "host": "192.168.0.12",
         "port": 13001,
         "disableTransactions": true
     },
 
     "mposMode": {
         "enabled": false,
-        "host": "192.168.0.10",
+        "host": "192.168.0.12",
         "port": 3306,
         "user": "me",
         "password": "mypass",
