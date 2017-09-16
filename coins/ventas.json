@@ -4,5 +4,6 @@
     "algorithm": "scrypt",
     "peerMagic": "76656e74",
     "peerMagicTestnet": "fdd2c8f1",
-    "addTimeStamp": true
+    "addTimeStamp": true,
+    "reward": "POW"
 }
