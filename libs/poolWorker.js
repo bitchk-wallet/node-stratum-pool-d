@@ -153,7 +153,7 @@ module.exports = function(logger) {
             };
 
             handlers.share = function(isValidShare, isValidBlock, data) {
-                console.log("share ", data);
+
                 shareProcessor.handleShare(isValidShare, isValidBlock, data);
             };
         }
@@ -177,7 +177,7 @@ module.exports = function(logger) {
         pool.on('share', function(isValidShare, isValidBlock, data) {
 
             var shareData = JSON.stringify(data);
-            console.log("poolWoker", data);
+
             if (data.blockHash && !isValidBlock)
                 logger.debug(logSystem, logComponent, logSubCat, 'We thought a block was found but it was rejected by the daemon, share data: ' + shareData);
 
