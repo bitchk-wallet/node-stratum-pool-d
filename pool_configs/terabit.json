@@ -3,7 +3,11 @@
     "coin": "terabit.json",
 
     // "address": "TV562TUSKsUomLnJrA8PR1j1H1LSuiBdEZ",
+<<<<<<< HEAD
     "address": "TYeqG4sfBH8jAJHDQq8UHg6dW431oeFHh2",
+=======
+    "address": "TPJAKNbbCCJ9xgDXroR3fJVb14GsuqNgzf",
+>>>>>>> 073378d5f0eb4c9364816f7c84c89f0a01f2fd02
 
     "rewardRecipients": {
         // "VGWsQn23oasJqRjjhV5LuhPqbanSkqkLoR": 1.5,
@@ -15,7 +19,11 @@
         "paymentInterval": 20,
         "minimumPayment": 70,
         "daemon": {
+<<<<<<< HEAD
             "host": "127.0.0.1",
+=======
+            "host": "192.168.0.12",
+>>>>>>> 073378d5f0eb4c9364816f7c84c89f0a01f2fd02
             "port": 13002,
             "user": "terabitrpc",
             "password": "sklsdfn!23sdf"
@@ -23,10 +31,17 @@
     },
 
     "ports": {
+<<<<<<< HEAD
         "13008": {
             "diff": 8
         },
         "13032": {
+=======
+        "17008": {
+            "diff": 8
+        },
+        "17032": {
+>>>>>>> 073378d5f0eb4c9364816f7c84c89f0a01f2fd02
             "diff": 32,
             "varDiff": {
                 "minDiff": 8,
@@ -36,13 +51,21 @@
                 "variancePercent": 30
             }
         },
+<<<<<<< HEAD
         "13025": {
+=======
+        "17256": {
+>>>>>>> 073378d5f0eb4c9364816f7c84c89f0a01f2fd02
             "diff": 256
         }
     },
 
     "daemons": [{
+<<<<<<< HEAD
         "host": "127.0.0.1",
+=======
+        "host": "192.168.0.12",
+>>>>>>> 073378d5f0eb4c9364816f7c84c89f0a01f2fd02
         "port": 13002,
         "user": "terabitrpc",
         "password": "sklsdfn!23sdf"
@@ -50,7 +73,11 @@
 
     "p2p": {
         "enabled": true,
+<<<<<<< HEAD
         "host": "127.0.0.1",
+=======
+        "host": "192.168.0.12",
+>>>>>>> 073378d5f0eb4c9364816f7c84c89f0a01f2fd02
         "port": 13001,
         "disableTransactions": true
     },
