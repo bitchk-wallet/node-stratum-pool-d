@@ -1,8 +1,7 @@
 {
-    "enabled": true,
+    "enabled": false,
     "coin": "terabit.json",
 
-    // "address": "TV562TUSKsUomLnJrA8PR1j1H1LSuiBdEZ",
     "address": "TYeqG4sfBH8jAJHDQq8UHg6dW431oeFHh2",
 
     "rewardRecipients": {
