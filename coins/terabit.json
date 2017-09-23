@@ -1,0 +1,9 @@
+{
+    "name": "Terabit",
+    "symbol": "TBC",
+    "algorithm": "scrypt",
+    "addTimeStamp": true,
+    "peerMagic": "70352205",
+    "peerMagicTestnet": "fdd2c8f1",
+    "reward": "POW"
+}
