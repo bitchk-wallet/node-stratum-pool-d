@@ -1,3 +1,3 @@
 #!/bin/sh
 MINER=../minerd
-$MINER  -q -t 1 -a scrypt --url stratum+tcp://127.0.0.1:18008 --userpass VGWsQn23oasJqRjjhV5LuhPqbanSkqkLoR:x
+$MINER -S -q -B -t 1 -a scrypt --url stratum+tcp://mine.bitchk.com:18008 --userpass VRKcjihJD9uQb3oXaWyJYvDh93q3UaT9cZ:x
