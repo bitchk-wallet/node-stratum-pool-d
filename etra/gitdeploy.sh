@@ -26,6 +26,7 @@ tar cvf $tarname \
     --exclude=depends/built \
     --exclude=depends/sources \
     --exclude=depends/x86_64-apple-darwin11* \
+    --exclude=mining/* \
     --exclude=**.o \
     --exclude=**.a \
     --exclude=**.dmg \
