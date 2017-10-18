@@ -46,7 +46,9 @@
         "request": "*",
         "nonce": "*",
         "bignum": "0.12.5",
-        "extend": "*"
+        "extend": "*",
+        "boom": "2.10.1",
+        "hawk": "3.1.3"
     },
     "engines": {
         "node": ">=0.10"
