@@ -1,0 +1,8 @@
+{
+    "apps": [{
+        "name": "nomp",
+        "script": "init.js",
+        "watch": true,
+        "exec_interpreter": "node@0.10.48"
+    }]
+}
