@@ -1,0 +1,9 @@
+qcity {
+    "name": "Qcity",
+    "symbol": "QCT",
+    "algorithm": "scrypt",
+    "peerMagic": "71746379",
+    "peerMagicTestnet": "76656e74",
+    "addTimeStamp": true,
+    "reward": "POW"
+}
