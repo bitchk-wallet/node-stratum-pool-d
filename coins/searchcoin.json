@@ -1,9 +1,9 @@
 {
     "name": "Searchcoin",
-    "symbol": "QAC",
+    "symbol": "SSC",
     "algorithm": "scrypt",
-    "peerMagic": "51554153",
-    "peerMagicTestnet": "71756173",
+    "peerMagic": "53454152",
+    "peerMagicTestnet": "73656172",
     "addTimeStamp": true,
     "reward": "POW"
 }
