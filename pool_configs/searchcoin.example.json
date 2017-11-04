@@ -1,10 +1,11 @@
 {
     "enabled": false,
-    "coin": "qcity.json",
-    "address": "TP49RrUnZgib9T3fs5afHVZpwQ3Ncgj3cV",
+    "coin": "searchcoin.json",
+
+    "address": "ScJXEx6ajbyWK4wBbqQP9dbqbdQnazzZFr",
 
     "rewardRecipients": {
-        // "VGWsQn23oasJqRjjhV5LuhPqbanSkqkLoR": 1.5,
+        // "CWDCPnM2vXieD3XJhAZAxB6nkZPFCK6sbZ": 1.5,
         // "22851477d63a085dbc2398c8430af1c09e7343f6": 0.1
     },
 
@@ -13,18 +14,18 @@
         "paymentInterval": 20,
         "minimumPayment": 70,
         "daemon": {
-            "host": "127.0.0.1",
-            "port": 13302,
-            "user": "qcityrpc",
-            "password": "qcityrpc"
+            "host": "192.168.0.12",
+            "port": 13402,
+            "user": "1234567890",
+            "password": "1234567890"
         }
     },
 
     "ports": {
-        "13308": {
+        "13408": {
             "diff": 8
         },
-        "13332": {
+        "13432": {
             "diff": 32,
             "varDiff": {
                 "minDiff": 8,
@@ -34,22 +35,22 @@
                 "variancePercent": 30
             }
         },
-        "13325": {
+        "13456": {
             "diff": 256
         }
     },
 
     "daemons": [{
-        "host": "127.0.0.1",
-        "port": 13302,
-        "user": "qcityrpc",
-        "password": "qcityrpc"
+        "host": "192.168.0.12",
+        "port": 13402,
+        "user": "1234567890",
+        "password": "1234567890"
     }],
 
     "p2p": {
         "enabled": true,
-        "host": "127.0.0.1",
-        "port": 13301,
+        "host": "192.168.0.12",
+        "port": 13401,
         "disableTransactions": true
     },
 
