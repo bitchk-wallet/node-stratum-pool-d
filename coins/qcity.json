@@ -1,4 +1,4 @@
-qcity {
+{
     "name": "Qcity",
     "symbol": "QCT",
     "algorithm": "scrypt",
