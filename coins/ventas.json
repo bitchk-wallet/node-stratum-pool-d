@@ -1,6 +1,6 @@
 {
     "name": "Ventas",
-    "symbol": "VEN",
+    "symbol": "VENC",
     "algorithm": "scrypt",
     "peerMagic": "76656e74",
     "peerMagicTestnet": "fdd2c8f1",
