@@ -2,7 +2,7 @@
     "name": "Paxcoin",
     "symbol": "PAX",
     "algorithm": "scrypt",
-    "peerMagic": "50414843",
+    "peerMagic": "50415843",
     "peerMagicTestnet": "70617863",
     "addTimeStamp": true,
     "reward": "POW"
