@@ -379,11 +379,19 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                         //Check if payments failed because wallet doesn't have enough coins to pay for tx fees
                         if (result.error && result.error.code === -6) {
                             var higherPercent = withholdPercent + 0.01;
+<<<<<<< HEAD
                             if (higherPercent > 1.0) {
                                 higherPercent = 1.0;
                             }
                             logger.warning(logSystem, logComponent, 'Not enough funds to cover the tx fees for sending out payments, decreasing rewards by ' +
                                 (higherPercent * 100) + '% and retrying');
+=======
+                            if(higherPercent >= 1.0){
+                                higherPercent = 1.0;
+                            }
+                            logger.warning(logSystem, logComponent, 'Not enough funds to cover the tx fees for sending out payments, decreasing rewards by '
+                                + (higherPercent * 100) + '% and retrying');
+>>>>>>> 40f909db8523acbe0a4795e4c6dad089db8d7364
                             trySend(higherPercent);
                         } else if (result.error) {
                             logger.error(logSystem, logComponent, 'Error trying to send payments with RPC sendmany ' +
