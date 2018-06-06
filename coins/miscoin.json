@@ -1,0 +1,9 @@
+{
+    "name": "Miscoin",
+    "symbol": "MIS",
+    "algorithm": "scrypt",
+    "peerMagic": "6e667d57",
+    "peerMagicTestnet": "6e667d58",
+    "addTimeStamp": true,
+    "reward": "POW"
+}
