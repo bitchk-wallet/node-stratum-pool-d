@@ -351,7 +351,10 @@ function SetupForPool(logger, poolOptions, setupFinished) {
              */
             function(workers, rounds, addressAccount, callback) {
 
-                var trySend = function(withholdPercent) {
+                var trySend = function(withholdPercent, callCnt) {
+                    if (callCnt > 1) {
+                        console.log('callCnt', callCnt);
+                    }
                     var addressAmounts = {};
                     var totalSent = 0;
                     for (var w in workers) {
@@ -379,14 +382,14 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                         //Check if payments failed because wallet doesn't have enough coins to pay for tx fees
                         if (result.error && result.error.code === -6) {
                             var higherPercent = withholdPercent + 0.01;
-
+                            console.log(addressAmounts);
                             if (higherPercent > 1.0) {
                                 higherPercent = 1.0;
                             }
                             logger.warning(logSystem, logComponent, 'Not enough funds to cover the tx fees for sending out payments, decreasing rewards by ' +
                                 (higherPercent * 100) + '% and retrying');
 
-                            trySend(higherPercent);
+                            trySend(higherPercent, callCnt++);
                         } else if (result.error) {
                             logger.error(logSystem, logComponent, 'Error trying to send payments with RPC sendmany ' +
                                 JSON.stringify(result.error));
