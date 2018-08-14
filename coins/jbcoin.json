@@ -1,0 +1,9 @@
+{
+    "name": "JBCoin",
+    "symbol": "JBC",
+    "algorithm": "scrypt",
+    "peerMagic": "a4424343",
+    "peerMagicTestnet": "a4424343",
+    "addTimeStamp": true,
+    "reward": "POW"
+}
