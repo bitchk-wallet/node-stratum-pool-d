@@ -114,7 +114,8 @@ module.exports = function(logger, portalConfig, poolConfigs){
                 ['hgetall', ':stats'],
                 ['scard', ':blocksPending'],
                 ['scard', ':blocksConfirmed'],
-                ['scard', ':blocksOrphaned']
+                ['scard', ':blocksOrphaned'],
+                ['scard', ':blocksKicked']
             ];
 
             var commandsPerCoin = redisCommandTemplates.length;
@@ -150,7 +151,8 @@ module.exports = function(logger, portalConfig, poolConfigs){
                             blocks: {
                                 pending: replies[i + 3],
                                 confirmed: replies[i + 4],
-                                orphaned: replies[i + 5]
+                                orphaned: replies[i + 5],
+                                kicked: replies[i + 6]
                             }
                         };
                         allCoinStats[coinStats.name] = (coinStats);
