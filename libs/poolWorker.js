@@ -143,7 +143,11 @@ module.exports = function(logger) {
                     } else {
                         pool.daemon.cmd('validateaddress', [workerName], function(results) {
                             var isValid = results.filter(function(r) {
-                                return r.response.isvalid
+                                try{ 
+                                    return r.response.isvalid
+                                }catch(e){
+                                    return false;
+                                }
                             }).length > 0;
                             authCallback(isValid);
                         });
