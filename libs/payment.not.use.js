@@ -150,12 +150,12 @@ function SetupForPool(logger, poolOptions, setupFinished) {
         var endRPCTimer = function () {
             timeSpentRPC += Date.now() - startTimeRedis
         };
-
+        console.log("\n\n\n\n\n\n\n\n START WATER FALL");
         async.waterfall([
 
             /* Call redis to get an array of rounds - which are coinbase transactions and block heights from submitted
                blocks. */
-            function (callback) {
+            function collectRound(callback) {
 
                 startRedisTimer();
                 redisClient.multi([
@@ -177,6 +177,7 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                         workers[w] = {
                             balance: coinsToSatoshies(parseFloat(results[0][w]))
                         };
+                        
                     }
 
                     var rounds = results[1].map(function (r) {
@@ -188,23 +189,19 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                             serialized: r
                         };
                     });
-                    //big block pending prevent...
                     const LIMIT = 500; // debug
                     if (rounds.length > LIMIT) {
-                        rounds.sort(function(a,b){
-                            return a.height - b.height;
-                        });
                         rounds = rounds.slice(0, LIMIT);
+                        //console.log("round #1 ", rounds);
                     }
-                    logger.warning(logSystem, logComponent,"round #1 start[" + rounds[0].height + "] end["+rounds[rounds.length-1].height + "]");
                     callback(null, workers, rounds);
                 });
             },
 
             /* Does a batch rpc call to daemon with all the transaction hashes to see if they are confirmed yet.
                It also adds the block reward amount to the round object - which the daemon gives also gives us. */
-            function (workers, rounds, callback) {
-
+            function rpcRound(workers, rounds, callback) {
+                console.log('# 2 rounds size', rounds.length);
                 var batchRPCcommand = rounds.map(function (r) {
                     return ['gettransaction', [r.txHash]];
                 });
@@ -212,6 +209,7 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                 batchRPCcommand.push(['getaccount', [poolOptions.address]]);
 
                 startRPCTimer();
+
                 daemon.batchCmd(batchRPCcommand, function (error, txDetails) {
                     endRPCTimer();
 
@@ -220,6 +218,10 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                             JSON.stringify(error));
                         callback(true);
                         return;
+                    } else {
+                        // console.log("result >>> ");
+                        // console.log("COMAND RESULT" ,txDetails);
+                        // console.log("result <<< ");
                     }
 
                     var addressAccount;
@@ -227,7 +229,7 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                     txDetails.forEach(function (tx, i) {
 
                         if (i === txDetails.length - 1) {
-                            addressAccount = tx.result;
+                            addressAccount = tx.result; // account request , may null or "";
                             return;
                         }
 
@@ -235,13 +237,16 @@ function SetupForPool(logger, poolOptions, setupFinished) {
 
                         if (tx.error && tx.error.code === -5) {
                             logger.warning(logSystem, logComponent, 'Daemon reports invalid transaction: ' + round.txHash);
+                            console.log(logComponent, "error", tx.error);
                             round.category = 'kicked';
                             return;
                         } else if (!tx.result.details || (tx.result.details && tx.result.details.length === 0)) {
-                            logger.warning(logSystem, logComponent, 'Daemon reports no details for transaction: ' + round.txHash);
+                            logger.warning(logComponent, 'Daemon reports no details for transaction: ' + round.txHash);
+
                             round.category = 'kicked';
                             return;
                         } else if (tx.error || !tx.result) {
+                            console.log(logSystem, logComponent, tx.error);
                             logger.error(logSystem, logComponent, 'Odd error with gettransaction ' + round.txHash + ' ' +
                                 JSON.stringify(tx));
                             return;
@@ -296,7 +301,8 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                         }
                     });
 
-                    console.log("round #2 " , rounds.length);
+                    console.log('rounds last....', rounds.length);
+
                     callback(null, workers, rounds, addressAccount);
 
                 });
@@ -304,10 +310,13 @@ function SetupForPool(logger, poolOptions, setupFinished) {
 
 
             /* Does a batch redis call to get shares contributed to each round. Then calculates the reward
-               amount owned to each miner for each round. */
-            function (workers, rounds, addressAccount, callback) {
+               amount owned to each miner for each round. 
+               addressAccount : 돈을 빼올 주소의 계정.
+               */
+            function checkRound(workers, rounds, addressAccount, callback) {
 
-
+                console.log("# checkRound. >>>>>>>>>>>>>");
+                // find shares...
                 var shareLookups = rounds.map(function (r) {
                     return ['hgetall', coin + ':shares:round' + r.height]
                 });
@@ -315,13 +324,13 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                 startRedisTimer();
                 redisClient.multi(shareLookups).exec(function (error, allWorkerShares) {
                     endRedisTimer();
-
+                    // allWorkersShares... 
                     if (error) {
                         callback('Check finished - redis error with multi get rounds share');
                         return;
                     }
 
-
+                    //넘어온 라운드를 뒤진다.
                     rounds.forEach(function (round, i) {
                         var workerShares = allWorkerShares[i];
 
@@ -334,7 +343,9 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                         switch (round.category) {
                             case 'kicked':
                             case 'orphan':
+                                // 잘못된 작업이면, 해당 쉬어를 저장한다.
                                 round.workerShares = workerShares;
+                                console.log("invalid round", round);
                                 break;
 
                             case 'generate':
@@ -345,23 +356,26 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                                 var totalShares = Object.keys(workerShares).reduce(function (p, c) {
                                     return p + parseFloat(workerShares[c])
                                 }, 0);
-
+                                /**
+                                 * 사용자별 보상 을 구성한다.
+                                 */
                                 for (var workerAddress in workerShares) {
                                     var percent = parseFloat(workerShares[workerAddress]) / totalShares;
                                     var workerRewardTotal = Math.floor(reward * percent);
                                     var worker = workers[workerAddress] = (workers[workerAddress] || {});
                                     worker.reward = (worker.reward || 0) + workerRewardTotal;
                                 }
+
                                 break;
                         }
                     });
-
+                    console.log("end checkRound <<<<<<")
                     callback(null, workers, rounds, addressAccount);
                 });
             },
             // remove kicked or orphan round shares
             function removeKicked(workers, rounds, addressAccount, callback) {
-                
+                console.log("# removeKicked ===>" ,workers);
                 var movePendingCommands = [];
                 var roundsToDelete = [];
                 var orphanMergeCommands = [];
@@ -433,13 +447,14 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                 logger.warning(logSystem, logComponent, "movePendingCommands:" + movePendingCommands.length + ",roundsToDelete:" + roundsToDelete.length);
                 if (finalRedisCommands.length === 0) {
                     console.log("end Kicked #1 ...");
-                    callback(null, workers, rounds, addressAccount);
+                    callback(null,workers, rounds, addressAccount);
                 } else {
 
                     startRedisTimer();
                     redisClient.multi(finalRedisCommands).exec(function (error, results) {
                         endRedisTimer();
                         if (error) {
+                            clearInterval(paymentInterval);
                             logger.error(logSystem, logComponent,
                                 'Payments sent but could not update redis. ' + JSON.stringify(error) +
                                 ' Disabling payment processing to prevent possible double-payouts. The redis commands in ' +
@@ -449,50 +464,68 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                             });
                         }
                         console.log("end Kicked... #2");
-                        callback(null, workers, rounds, addressAccount);
+                        callback(null,workers, rounds, addressAccount);
                     });
                 }
             },
+
             /* Calculate if any payments are ready to be sent and trigger them sending
              Get balance different for each address and pass it along as object of latest balances such as
              {worker1: balance1, worker2, balance2}
              when deciding the sent balance, it the difference should be -1*amount they had in db,
              if not sending the balance, the differnce should be +(the amount they earned this round)
              */
-            function (workers, rounds, addressAccount, callback) {
+            function sendPay(workers, rounds, addressAccount, callback) {
+                console.log("#sendPay >>>>");
+                // 작업자들과 라운드가 들어 왔다. 
 
+                /**
+                 * 전송을 시도한다. 
+                 * 자금이 모자랄경우 루프를 돈다.
+                 * @param {*} withholdPercent 
+                 * @param {*} callCnt 
+                 */
                 var trySend = function (withholdPercent, callCnt) {
                     if (callCnt > 1) {
                         console.log('callCnt', callCnt);
                     }
                     var addressAmounts = {};
                     var totalSent = 0;
+                    // set max 
                     for (var w in workers) {
+
                         var worker = workers[w];
                         worker.balance = worker.balance || 0;
                         worker.reward = worker.reward || 0;
                         var toSend = (worker.balance + worker.reward) * (1 - withholdPercent);
-                        if (toSend >= minPaymentSatoshis) {
+                        if (toSend >= minPaymentSatoshis) { //전송...
                             totalSent += toSend;
                             var address = worker.address = (worker.address || getProperAddress(w));
-                            worker.sent = addressAmounts[address] = satoshisToCoins(toSend);
+                            worker.sent = addressAmounts[address] = satoshisToCoins(toSend); // 전송할 자금...
                             worker.balanceChange = Math.min(worker.balance, toSend) * -1;
                         } else {
                             worker.balanceChange = Math.max(toSend - worker.balance, 0);
+                            if (worker.balanceChange < 0) {
+                                console.log(worker.balance, toSend);
+                            }
                             worker.sent = 0;
                         }
+                        
+
                     }
 
                     if (Object.keys(addressAmounts).length === 0) {
+                        console.log("skip no pay... sendpay <<<<<<<<<");
                         callback(null, workers, rounds);
                         return;
                     }
 
                     daemon.cmd('sendmany', [addressAccount || '', addressAmounts], function (result) {
                         //Check if payments failed because wallet doesn't have enough coins to pay for tx fees
+                        // 자금부족.
                         if (result.error && result.error.code === -6) {
                             var higherPercent = withholdPercent + 0.01;
-                            console.log(addressAmounts);
+                            console.log("sendmany fail" ,addressAmounts);
                             if (higherPercent > 1.0) {
                                 higherPercent = 1.0;
                             }
@@ -501,8 +534,11 @@ function SetupForPool(logger, poolOptions, setupFinished) {
 
                             trySend(higherPercent, callCnt++);
                         } else if (result.error) {
-                            logger.error(logSystem, logComponent, 'Error trying to send payments with RPC sendmany ' +
+                            // 전송오류....
+                            // 너무 많은 거래나 너무큰 자금일 경우 문제가 발생한다.
+                            logger.error(logSystem, logComponent, 'Error trying to send payments with RPC sendmany \n\t' +
                                 JSON.stringify(result.error));
+                            console.log("sendmany fail ", addressAccount, addressAmounts);
                             callback(true);
                         } else {
                             logger.debug(logSystem, logComponent, 'Sent out a total of ' + (totalSent / magnitude) +
@@ -519,8 +555,11 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                 trySend(0);
 
             },
-            function (workers, rounds, callback) {
-
+            // 정리...  위에서 오류가 발생하면 오지 않아서 쉐어가 쌓인다.
+            // 중간에 잘못된 쉐어에 대한 처리를 진행한다.
+            // 잘못된 쉐어가 다른곳에서 계산되어지는지 확인해야 한다.
+            function clearRound(workers, rounds, callback) {
+                console.log("clearRound >>", workers);
                 var totalPaid = 0;
 
                 var balanceUpdateCommands = [];
@@ -536,7 +575,7 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                             satoshisToCoins(worker.balanceChange)
                         ]);
                     }
-                    if (worker.sent !== 0) {
+                    if (worker.sent !== 0) { // 전달되었으면 payout 에 넣는다.
                         workerPayoutsCommand.push(['hincrbyfloat', coin + ':payouts', w, worker.sent]);
                         totalPaid += worker.sent;
                     }
@@ -547,7 +586,7 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                 var movePendingCommands = [];
                 var roundsToDelete = [];
                 var orphanMergeCommands = [];
-
+                // 완료된쉐어 정리...
                 var moveSharesToCurrent = function (r) {
                     var workerShares = r.workerShares;
                     Object.keys(workerShares).forEach(function (worker) {
@@ -556,7 +595,6 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                         ]);
                     });
                 };
-
                 rounds.forEach(function (r) {
 
                     switch (r.category) {
@@ -598,6 +636,7 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                     finalRedisCommands.push(['hincrbyfloat', coin + ':stats', 'totalPaid', totalPaid]);
 
                 if (finalRedisCommands.length === 0) {
+                    console.log("clearRound end no redis<<<<<");
                     callback();
                     return;
                 }
@@ -616,10 +655,12 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                         });
                     }
                     callback();
+                    console.log("clearRound end with redis <<<<<");
                 });
+
             }
 
-        ], function () {
+        ], function end() {
 
             var paymentProcessTime = Date.now() - startPaymentProcess;
             logger.debug(logSystem, logComponent, 'Finished interval - time spent: ' +
