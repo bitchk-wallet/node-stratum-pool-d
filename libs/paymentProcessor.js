@@ -195,8 +195,10 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                             return a.height - b.height;
                         });
                         rounds = rounds.slice(0, LIMIT);
+                        logger.warning(logSystem, logComponent,"round #1 start[" + rounds[0].height + "] end["+rounds[rounds.length-1].height + "]");
                     }
-                    logger.warning(logSystem, logComponent,"round #1 start[" + rounds[0].height + "] end["+rounds[rounds.length-1].height + "]");
+                    
+                    
                     callback(null, workers, rounds);
                 });
             },
