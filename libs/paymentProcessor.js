@@ -412,7 +412,6 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                         case 'orphan':
                         case 'kicked':
                             r.canDeleteShares = canDeleteShares(r);
-                            console.log("can delete", r.canDeleteShares);
                             return false;
                         case 'generate':
                             return true;
