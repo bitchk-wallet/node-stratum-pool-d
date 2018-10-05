@@ -502,6 +502,7 @@ function SetupForPool(logger, poolOptions, setupFinished) {
 
                             trySend(higherPercent, callCnt++);
                         } else if (result.error) {
+                            console.log("error pay" , [addressAccount || '', addressAmounts]);
                             logger.error(logSystem, logComponent, 'Error trying to send payments with RPC sendmany ' +
                                 JSON.stringify(result.error));
                             callback(true);
