@@ -369,12 +369,15 @@ function SetupForPool(logger, poolOptions, setupFinished) {
                 var orphanMergeCommands = [];
                 // 완료된쉐어 정리...
                 var moveSharesToCurrent = function (r) {
+
                     var workerShares = r.workerShares;
-                    Object.keys(workerShares).forEach(function (worker) {
-                        orphanMergeCommands.push(['hincrby', coin + ':shares:roundCurrent',
-                            worker, workerShares[worker]
-                        ]);
-                    });
+                    if(workerShares) { 
+                        Object.keys(workerShares).forEach(function (worker) {
+                            orphanMergeCommands.push(['hincrby', coin + ':shares:roundCurrent',
+                                worker, workerShares[worker]
+                            ]);
+                        });
+                    }
                 };
 
                 rounds.forEach(function (r) {
